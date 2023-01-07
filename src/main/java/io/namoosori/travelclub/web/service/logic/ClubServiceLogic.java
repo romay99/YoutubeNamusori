@@ -6,27 +6,22 @@ import io.namoosori.travelclub.web.service.sdo.TravelClubCdo;
 import io.namoosori.travelclub.web.shared.NameValueList;
 import io.namoosori.travelclub.web.store.ClubStore;
 import io.namoosori.travelclub.web.util.exception.NoSuchClubException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 public class ClubServiceLogic implements ClubService {
-	//
+
+	@Autowired
 	private ClubStore clubStore;
 
-	public ClubServiceLogic(ClubStore clubStore) {
-		//
-		this.clubStore = clubStore;
-	}
-
 	@Override
-	public String registerClub(TravelClubCdo clubCdo) {
-		//
-		TravelClub club = new TravelClub(clubCdo.getName(), clubCdo.getIntro());
-		club.checkValidation();
-		String clubId = clubStore.create(club);
-		return clubId;
+	public String registerClub(TravelClubCdo club) {
+		TravelClub newClub = new TravelClub(club.getName(), club.getIntro());
+		newClub.checkValidation();
+		return clubStore.create(newClub);
 	}
 
 	@Override
@@ -40,24 +35,27 @@ public class ClubServiceLogic implements ClubService {
 	}
 
 	@Override
-	public List<TravelClub> findAll(){
-		return clubStore.retrieveAll();
+	public List<TravelClub> findAll() {
+		return null;
 	}
+
 	@Override
-	public void modify(String clubId, NameValueList nameValueList) {
-		TravelClub travelClub = clubStore.retrieve(clubId);
-		if (travelClub == null) {
-			throw new NoSuchClubException("No such club with id " + clubId);
+	public void modify(String clubId, NameValueList nameValues) {
+		TravelClub foundedClub = clubStore.retrieve(clubId);
+		if (foundedClub == null) {
+			throw new NoSuchClubException("No Such Club with Id" + clubId);
 		}
-		travelClub.modifyValues(nameValueList);
-		clubStore.update(travelClub);
+		foundedClub.modifyValues(nameValues);
+		clubStore.update(foundedClub);
+
 	}
 
 	@Override
 	public void remove(String clubId) {
-		if (!clubStore.exists(clubId)) {
-			throw new NoSuchClubException("No such club with id " + clubId);
+		if (clubStore.exists(clubId)) {
+			throw new NoSuchClubException("no such club");
 		}
 		clubStore.delete(clubId);
+
 	}
 }

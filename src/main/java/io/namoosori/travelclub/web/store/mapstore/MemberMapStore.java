@@ -11,46 +11,39 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
-public class MemberMapStore implements MemberStore {
-	//
-	private Map<String, CommunityMember> memberMap;
+public class MemberMapStore implements MemberStore{
 
-	public MemberMapStore() {
-		//
+	private Map<String , CommunityMember> memberMap;
+
+	public MemberMapStore(){
 		this.memberMap = new LinkedHashMap<>();
 	}
 
 	@Override
 	public String create(CommunityMember member) {
-		//
 		memberMap.put(member.getId(), member);
 		return member.getId();
 	}
 
 	@Override
 	public CommunityMember retrieve(String memberId) {
-		//
 		return memberMap.get(memberId);
 	}
 
 	@Override
 	public CommunityMember retrieveByEmail(String email) {
-		//
-		CommunityMember targetMember = null;
-
+		CommunityMember targetMemeber = null;
 		for (CommunityMember member : memberMap.values()) {
 			if (member.getEmail().equals(email)) {
-				targetMember = member;
+				targetMemeber = member;
 				break;
 			}
 		}
-
-		return targetMember;
+		return targetMemeber;
 	}
 
 	@Override
 	public List<CommunityMember> retrieveByName(String name) {
-		//
 		return memberMap.values().stream()
 				.filter(member -> member.getName().equals(name))
 				.collect(Collectors.toList());
@@ -58,19 +51,16 @@ public class MemberMapStore implements MemberStore {
 
 	@Override
 	public void update(CommunityMember member) {
-		//
 		memberMap.put(member.getId(), member);
 	}
 
 	@Override
 	public void delete(String memberId) {
-		//
 		memberMap.remove(memberId);
 	}
 
 	@Override
 	public boolean exists(String memberId) {
-		//
 		return Optional.ofNullable(memberMap.get(memberId)).isPresent();
 	}
 }
